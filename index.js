@@ -3,12 +3,14 @@ const bodyParser = require('body-parser')
 const morgan = require('morgan')
 const app = express()
 
-app.use(bodyParser.json())
 morgan.token('body', (req) => JSON.stringify(req.body))
+
+app.use(bodyParser.json())
+app.use(express.static('build'))
 app.use(morgan(':method :url :body :status :res[content-length] - :response-time ms'))
 
 const PORT = process.env.PORT || 3001
-const baseUrl = '/api'
+const baseUrl = '/api/persons'
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
@@ -81,25 +83,25 @@ const validatePostRequest = (name, number) => {
   return errors.length ? errors : null
 }
 
-app.delete(`${baseUrl}/persons/:id`, (req, res) => {
+app.delete(`${baseUrl}/:id`, (req, res) => {
   const id = Number(req.params.id)
   persons = persons.filter(p => p.id !== id)
 
   res.status(204).end()
 })
 
-app.get(`${baseUrl}/persons`, (req, res) => {
+app.get(`${baseUrl}`, (req, res) => {
   res.json(persons)
 })
 
-app.get(`${baseUrl}/persons/:id`, (req, res) => {
+app.get(`${baseUrl}/:id`, (req, res) => {
   const id = Number(req.params.id)
   const person = persons.find(p => p.id === id)
 
   person ? res.json(person) : res.status(404).end()
 })
 
-app.post(`${baseUrl}/persons`, (req, res) => {
+app.post(`${baseUrl}`, (req, res) => {
   const body = req.body
   const errors = validatePostRequest(body.name, body.number)
 
@@ -121,8 +123,4 @@ app.get('/info', (req, res) => {
   const info = `<p>puhelinluettelossa ${persons.length} henkilön tiedot</p>
     ${new Date()}`
   res.send(info)
-})
-
-app.get('*', (req, res) => {
-  res.redirect(`${baseUrl}/persons`)
 })
