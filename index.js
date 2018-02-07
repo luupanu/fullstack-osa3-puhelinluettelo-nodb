@@ -7,11 +7,11 @@ app.use(bodyParser.json())
 morgan.token('body', (req) => JSON.stringify(req.body))
 app.use(morgan(':method :url :body :status :res[content-length] - :response-time ms'))
 
-const port = process.env.port || 3001
+const PORT = process.env.PORT || 3001
 const baseUrl = '/api'
 
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`)
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`)
 })
 
 let persons = [
