@@ -122,3 +122,7 @@ app.get('/info', (req, res) => {
     ${new Date()}`
   res.send(info)
 })
+
+app.get('*', (req, res) => {
+  res.redirect(`${baseUrl}/persons`)
+})
